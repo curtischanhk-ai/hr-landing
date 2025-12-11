@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preface HR Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+    <style>
+        /* Full-page chat interface customization */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Preface branding: Primary teal (#00A676), secondary blue (#0052CC), light gray (#F8F9FA), dark (#1A1A1A) */
+        :root {
+            --chat--color--primary: #00A676; /* Preface primary teal */
+            --chat--color--primary-shade-50: #009C68;
+            --chat--color--primary--shade-100: #008E5E;
+            --chat--color--secondary: #0052CC; /* Preface secondary blue */
+            --chat--color-secondary-shade-50: #004AB8;
+            --chat--color-white: #ffffff;
+            --chat--color-light: #F8F9FA; /* Light background */
+            --chat--color-light-shade-50: #E9ECEF;
+            --chat--color-light-shade-100: #DEE2E6;
+            --chat--color-medium: #ADB5BD;
+            --chat--color-dark: #1A1A1A; /* Dark text */
+            --chat--color-disabled: #868E96;
+            --chat--color-typing: #495057;
+
+            --chat--spacing: 1rem;
+            --chat--border-radius: 0.5rem; /* Softer corners for modern look */
+            --chat--transition-duration: 0.2s;
+
+            /* Fullscreen mode: Full viewport */
+            --chat--window--width: 100vw;
+            --chat--window--height: 100vh;
+            --chat--header-height: auto;
+            --chat--header--padding: var(--chat--spacing);
+            --chat--header--background: var(--chat--color-white);
+            --chat--header--color: var(--chat--color-dark);
+            --chat--header--border-top: none;
+            --chat--header--border-bottom: 1px solid var(--chat--color-light-shade-100);
+
+            --chat--heading--font-size: 1.5rem;
+            --chat--subtitle--font-size: 0.875rem;
+            --chat--subtitle--line-height: 1.5;
+
+            --chat--textarea--height: 50px;
+            --chat--message--font-size: 1rem;
+            --chat--message--padding: 1rem;
+            --chat--message--border-radius: var(--chat--border-radius);
+            --chat--message-line-height: 1.6;
+
+            --chat--message--bot--background: var(--chat--color-light);
+            --chat--message--bot--color: var(--chat--color-dark);
+            --chat--message--bot--border: 1px solid var(--chat--color-light-shade-100);
+
+            --chat--message--user--background: var(--chat--color--primary);
+            --chat--message--user--color: var(--chat--color-white);
+            --chat--message--user--border: none;
+
+            --chat--message--pre--background: rgba(0, 166, 118, 0.1);
+
+            /* Hide toggle in fullscreen mode */
+            --chat--toggle--background: var(--chat--color--primary);
+            --chat--toggle--hover--background: var(--chat--color--primary-shade-50);
+            --chat--toggle--active--background: var(--chat--color--primary--shade-100);
+            --chat--toggle--color: var(--chat--color-white);
+            --chat--toggle--size: 64px;
+        }
+
+        /* Ensure container takes full space */
+        #n8n-chat {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Container for the chat widget -->
+    <div id="n8n-chat"></div>
+
+    <script type="module">
+        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+        // Configuration object with all customizable variables defined
+        // Webhook URL placeholder - replace with actual n8n webhook URL later
+        const chatConfig = {
+            // Required: n8n webhook endpoint (insert actual URL here)
+            webhookUrl: 'hhttps://curtislemon.app.n8n.cloud/webhook/e8385e72-55d8-4e81-83e3-be8477daa32d/chat',
+
+            // HTTP config for webhook requests
+            webhookConfig: {
+                method: 'POST', // Default: POST
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add custom headers if needed, e.g., for auth: 'Authorization': 'Bearer your-token'
+                }
+            },
+
+            // CSS selector for the container (full page)
+            target: '#n8n-chat',
+
+            // Render mode: 'fullscreen' for full-page interface (no toggle button)
+            mode: 'fullscreen',
+
+            // Key for user input in the payload to n8n
+            chatInputKey: 'chatInput',
+
+            // Key for session ID in the payload for AI Memory
+            chatSessionKey: 'sessionId',
+
+            // Load previous messages from localStorage for context
+            loadPreviousMessages: true,
+
+            // Additional metadata sent with every request (customize for HR context)
+            metadata: {
+                agent: 'hr-assistant',
+                company: 'Preface',
+                department: 'HR',
+                // Add more dynamic metadata if needed, e.g., user ID from auth
+            },
+
+            // Show welcome screen on open
+            showWelcomeScreen: true,
+
+            // Default language (only 'en' supported currently)
+            defaultLanguage: 'en',
+
+            // Initial bot messages for welcome
+            initialMessages: [
+                'Hello! 👋 I\'m your Preface HR Assistant.',
+                'I can help with HR policies, benefits, leave requests, and more. What would you like to know?'
+            ],
+
+            // Internationalization (English only for now)
+            i18n: {
+                en: {
+                    title: 'Preface HR Assistant',
+                    subtitle: 'Ask me anything about HR policies and employee support. Available 24/7.',
+                    footer: 'Powered by Preface & n8n',
+                    getStarted: 'Start New Chat',
+                    inputPlaceholder: 'Type your HR question here...'
+                }
+            },
+
+            // Enable file uploads (e.g., for resume uploads or policy docs)
+            allowFileUploads: true,
+
+            // Restrict to common document types for HR
+            allowedFilesMimeTypes: 'image/*,application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+
+            // Enable streaming responses for real-time typing effect (requires n8n workflow support)
+            enableStreaming: true
+        };
+
+        // Initialize the chat widget
+        createChat(chatConfig);
+    </script>
+</body>
+</html>
